@@ -1,0 +1,90 @@
+# Building CPI Stack Of Programe Using Hardware Counters And Linier Regression
+
+## Introduction
+We obtain the CPI (Cycles Per Instruction) stack for programs using hardware performance monitoring counters.
+**CPI stack** divides the total CPI of an application into components that reflect the time spent in various events, such L1-I Cache misses, L1-D cache misses, L2/L3 Cache misses, I-TLB and DTLB misses, branch misprediction, etc.
+The counts of various miss events occuring during program execution can be obtained using hardware Performane Monitoring Counters (PMC) on modern architectures.  Performance counter values for running application can be obtained using performance monitoring tools such as PAPI and  Perf.
+We are using Perf Tool.
+We Get various Miss Events for the program usinig perf and we built regression model on each program and plot CPI Stack Graph For Each Benchmark.
+
+## How To Get Analyze Programe Using Perf
+
+We Used Following Benchmarks.
+
+| 502.gcc_r|523.xalancbmk_r|
+|--|--|
+| **526.blender_r** |**544.nab_r**  |
+
+
+
+
+First We Need To Install Perf Tool in System.
+```
+apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
+
+
+```
+Now Let's See How We have Compile Each Benchmark
+###  502.gcc_r
+
+    perf stat -I 15 -o per_out_502.txt -e cpu-cycles,instructions,l1d.replacement,dTLB-load-misses,dTLB-store-misses,iTLB-load-misses,l2_rqsts.all_demand_miss,longest_lat_cache.miss,br_inst_retired.all_branches,frontend_retired.itlb_miss,itlb_misses.walk_completed,dtlb_load_misses.walk_completed,dtlb_store_misses.walk_completed,branch-misses exe/cpugcc_r_base.mytest-m64 data/refrate/input/gcc-pp.c -O3 -finline-limit=0 -fif-conversion -fif-conversion2 -o gcc-pp.opts-O3_-finline-limit_0_-fif-conversion_-fif-conversion2.s
+
+We truncated All ' , ' From the Number so that we can easily convert it into python float data type
+
+    tr -d ',' < per_out_502.txt > perout1_502.txt
+
+###  523.xalancbmk_r
+
+    perf stat -I 15 -o per_out.txt -e cpu-cycles,instructions,branch-misses,cache-misses,L1-dcache-loads,L1-dcache-load-misses,L1-dcache-stores,L1-dcache-store-misses,L1-dcache-prefetches,L1-dcache-prefetch-misses,L1-icache-loads,L1-icache-load-misses,L1-icache-prefetches,L1-icache-prefetch-misses,LLC-loads,LLC-load-misses,mem-loads,mem-stores,l2_rqsts.code_rd_miss,l2_rqsts.demand_data_rd_miss,l2_rqsts.rfo_miss,l1d_pend_miss.pending,frontend_retired.l1i_miss,frontend_retired.itlb_miss,frontend_retired.stlb_miss exe/cpuxalan_r_base.mytest-m64 -v data/refrate/input/t5.xml data/refrate/input/xalanc.xsl
+
+    tr -d ',' < per_out.txt > perout1_523.txt
+
+###  526.blender_r
+
+    perf stat -I 15 -o per_out_526.txt -e cpu-cycles,instructions,branch-misses,cache-misses,L1-dcache-loads,L1-dcache-load-misses,L1-dcache-stores,L1-dcache-store-misses,L1-dcache-prefetches,L1-dcache-prefetch-misses,L1-icache-loads,L1-icache-load-misses,L1-icache-prefetches,L1-icache-prefetch-misses,LLC-loads,LLC-load-misses,mem-loads,mem-stores,l2_rqsts.code_rd_miss,l2_rqsts.demand_data_rd_miss,l2_rqsts.rfo_miss,l1d_pend_miss.pending,frontend_retired.l1i_miss,frontend_retired.itlb_miss,frontend_retired.stlb_miss exe/blender_r_base.mytest-m64 data/refrate/input/sh3_no_char.blend --render-output sh3_no_char_--threads1 -b -F RAWTGA -s 849 -e 849 -a
+
+
+     tr -d ',' < per_out_526.txt > perout1_526.txt
+
+### 544.nab_r
+
+    perf stat -I 15 -o per_out_526.txt -e cpu-cycles,instructions,branch-misses,cache-misses,L1-dcache-loads,L1-dcache-load-misses,L1-dcache-stores,L1-dcache-store-misses,L1-dcache-prefetches,L1-dcache-prefetch-misses,L1-icache-loads,L1-icache-load-misses,L1-icache-prefetches,L1-icache-prefetch-misses,LLC-loads,LLC-load-misses,mem-loads,mem-stores,l2_rqsts.code_rd_miss,l2_rqsts.demand_data_rd_miss,l2_rqsts.rfo_miss,l1d_pend_miss.pending,frontend_retired.l1i_miss,frontend_retired.itlb_miss,frontend_retired.stlb_miss exe/nab_r_base.mytest-m64 1am0 1122214447 122
+
+    tr -d ',' < per_out_544.txt > perout1_544.txt
+
+
+
+
+## How To Use Data to plot Linear Regression
+Unzip the Problem_2 Folder.
+
+    cd Problem_2
+
+Now We have .txt File of the benchmark output.
+We Have to give path of that txt file as input to the Main.py.
+All the Text files are in Test folder.We can use Any one of those text file.
+It will take text file and then internally it will create csv file from that text file.
+And Do Linier Regression using csv and give various parameters as output.
+And also plot CPI Stack and Residual Plot.
+
+    python3 Main.py path/to/text/file
+
+## Output
+
+We Have All Parameters like RMSE , F State , P-value , R Square etc.
+And We have Stack Graph of Cpi and get Residuals Plot.
+
+    Base :  0.15327224279399115
+    Mean Square Error: 0.03509010472581555
+    R_Square :  0.9351548068220135
+    Adj :  0.9345556212587671
+    fstat : 660.1770591848838
+    Predicted :  0.4184557996221837
+    True : 0.5512553770464241
+    P value : 1.1102230246251565e-16
+
+
+
+![](data:image/png;base64,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XpPXT9MUFRXFwoULo62tLXduaGgo2traoq6u7qjX1NXVDRsfEfHoo4+OOB4AOL3k/TFNU1NTrFq1Kmpra2Px4sXR2toa/f390djYGBERK1eujNmzZ0dLS0tERFx//fVx2WWXxZ133hlXXXVVbN26NZ555pm49957x/aVAADjUt4x0tDQEAcOHIi1a9dGV1dX1NTUxPbt23MPqXZ2dkZh4esbLkuXLo37778/br755vjsZz8bF1xwQXznO9+Jiy++eOxeBTBuFRcXR3Nz8xEfzQKnj7x/zwgAwFjyt2kAgKTECACQlBgBAJISI8ApUV1dHa2tramXMWo7duyIgoKC+PWvf516KXDaESNwmvu7v/u7WL58eeplAKcxMQKMW4cPH069BGAMiBE4Dfzrv/5rXHLJJTFlypSYNWtW1NfXR39/f9xyyy3xjW98I7773e9GQUFBFBQUxI4dOyIi4oYbboi3vOUtMXXq1JgzZ0587nOfi1dffXXYvP/2b/8WixYtipKSkigvL48VK1aMuIb77rsvZsyYccRvZP7/bd68OaqqqmLq1KmxYsWK2LBhw7A/BXHLLbdETU1N3HffffHmN785SkpKIiJi+/bt8Y53vCNmzJgRs2bNive9733xs5/9LHfdvn37oqCgILZu3RpLly6NkpKSuPjii+OJJ544Yg0dHR1RW1sbU6dOjaVLl8bevXtH818MnAQxAhPcyy+/HNdcc018+MMfjueffz527NgRH/jAByLLsvj0pz8dH/zgB+PP//zP4+WXX46XX345li5dGhERZ555Znz961+P5557Lr7yla/E5s2b46677srN+9BDD8WKFSviyiuvjN27d0dbW1ssXrz4qGu4/fbb48Ybb4x///d/j8svv/yoY/7zP/8zPvaxj8X1118fe/bsiSuuuCK+9KUvHTHupz/9aXz729+OBx54IPbs2RMREf39/dHU1BTPPPNMtLW1RWFhYaxYsSKGhoaGXfuZz3wmPvWpT8Xu3bujrq4urr766vjlL385bMxNN90Ud955ZzzzzDMxefLk+PCHPzzq/2vgBGXAhNbR0ZFFRLZv376jfn/VqlXZ+9///uPOc8cdd2QLFy7MfV1XV5dde+21I44/99xzs7vuuiv7+7//++zss8/OfvSjHx1z/oaGhuyqq64adu7aa6/NysrKcl83NzdnZ5xxRtbT03PMuQ4cOJBFRPbss89mWZZlL7zwQhYR2bp163JjXn311exNb3pTdtttt2VZlmWPP/54FhHZD37wg9yYhx56KIuI7Le//e0x7wecHDsjMMEtWLAgLr/88rjkkkvib/7mb2Lz5s3xyiuvHPe6bdu2xdvf/vaorKyM6dOnx8033xydnZ257+/Zs2fEXY7X3HnnnbF58+Z48skn48/+7M+OOXbv3r1H7Kwcbafl3HPPjbPOOmvYuf/5n/+Ja665JubMmROlpaVRXV0dETFsvREx7A90Tp48OWpra+P5558fNmb+/Pm5f5999tkREdHT03PMtQMnR4zABDdp0qR49NFH45FHHol58+bF3XffHRdeeGG88MILI17T3t4e1157bVx55ZXxve99L3bv3h033XTTsAdGp0yZctx7X3rppTE4OBj//M//PCavJSJi2rRpR5y7+uqr41e/+lVs3rw5nn766Xj66acj4sQecD3jjDNy/y4oKIiIOOLjHmBsiRE4DRQUFMTb3/72uPXWW2P37t1RVFQUDz74YEREFBUVxeDg4LDxTz31VJx77rlx0003RW1tbVxwwQXx4osvDhszf/78Yz6MGvH7nY1HHnkkvvzlL8f69euPOfbCCy+MH/7wh8PO/eHXR/PLX/4y9u7dGzfffHNcfvnlMXfu3BF3fv7rv/4r9+/f/e530dHREXPnzj3uPYBTK++/2guML08//XS0tbXFe9/73njjG98YTz/9dBw4cCD3JlxdXR3f//73Y+/evTFr1qwoKyuLCy64IDo7O2Pr1q2xaNGieOihh3Lx8prm5ua4/PLL47zzzosPfehD8bvf/S4efvjhuOGGG4aNW7p0aTz88MPxF3/xFzF58uT45Cc/edR1XnfddfHOd74zNmzYEFdffXU89thj8cgjj+R2J0Yyc+bMmDVrVtx7771x9tlnR2dnZ9x4441HHbtx48a44IILYu7cuXHXXXfFK6+84gFV+FOQ+qEV4NR67rnnsmXLlmVnnXVWVlxcnL3lLW/J7r777tz3e3p6siuuuCKbPn16FhHZ448/nmVZln3mM5/JZs2alU2fPj1raGjI7rrrrmEPk2ZZln3729/OampqsqKioqy8vDz7wAc+kPveaw+wvuaJJ57Ipk2bln31q18dca333ntvNnv27GzKlCnZ8uXLsy9+8YtZZWVl7vvNzc3ZggULjrju0UcfzebOnZsVFxdn8+fPz3bs2JFFRPbggw9mWfb6A6z3339/tnjx4qyoqCibN29e9thjj+XmeO0B1ldeeSV3bvfu3VlEZC+88MLI/8HASSvIsixLWkMAI1i9enX85Cc/if/4j/84qXn27dsXb37zm2P37t1RU1MzNosDxoyPaYA/GevXr48rrrgipk2bFo888kh84xvfiH/4h39IvSzgFBMjwJ+MnTt3xu233x6HDh2KOXPmxFe/+tX46Ec/mnpZwCnmYxoAICk/2gsAJCVGAICkxAgAkJQYAQCSEiMAQFJiBABISowAAEmJEQAgKTECACT1/wCmpu6ucZ3LbQAAAABJRU5ErkJggg==)
+
+
