@@ -9,7 +9,6 @@ We Used Following SPEC Benchmarks.
 | 605.mcf_s-1152B.champsimtrace.xz|
 |--|
 | 619.lbm_s-2676B.champsimtrace.xz|
-|--|
 | 623.xalancbmk_s-592B.champsimtrace.xz|
 
 ## Below is the program files description:
@@ -42,7 +41,7 @@ bit size of 11 bits.
 bit size of 15 bits.
 #### Program files for Variation 3 are inside folder Variation_3 ####
 We have two sub variation for part 3 
-** a) Variation in maximum history length **
+##### a) Variation in maximum history length #####
 Program files for max history variation available at folder 
 Variation_3/max-history, inside max-history folder: 
 1. Tage_max_history_64 have implementation for Tage predictor variant 
@@ -51,7 +50,7 @@ with max-history length 65.
 variant with max-history length 131.
 3. Tage_max_history_255 have implementation for Tage predictor 
 variant with max-history length 255.
-** b) Variation in minimum history length **
+##### b) Variation in minimum history length #####
 Program files for max history variation available at folder 
 Variation_3/max-history, inside max-history folder: 
 1. Tage_min_history_5 have implementation for Tage predictor variant 
@@ -73,32 +72,10 @@ budget allocation for Perceptron predictor and 30 percent budget
 allocation for Tage predictor.
 
 
-###  502.gcc_r
 
-    perf stat -I 15 -o per_out_502.txt -e cpu-cycles,instructions,l1d.replacement,dTLB-load-misses,dTLB-store-misses,iTLB-load-misses,l2_rqsts.all_demand_miss,longest_lat_cache.miss,br_inst_retired.all_branches,frontend_retired.itlb_miss,itlb_misses.walk_completed,dtlb_load_misses.walk_completed,dtlb_store_misses.walk_completed,branch-misses exe/cpugcc_r_base.mytest-m64 data/refrate/input/gcc-pp.c -O3 -finline-limit=0 -fif-conversion -fif-conversion2 -o gcc-pp.opts-O3_-finline-limit_0_-fif-conversion_-fif-conversion2.s
+Now we will look at how to test predictors against given traces
 
-We truncated All ' , ' From the Number so that we can easily convert it into python float data type
-
-    tr -d ',' < per_out_502.txt > perout1_502.txt
-
-###  523.xalancbmk_r
-
-    perf stat -I 15 -o per_out.txt -e cpu-cycles,instructions,branch-misses,cache-misses,L1-dcache-loads,L1-dcache-load-misses,L1-dcache-stores,L1-dcache-store-misses,L1-dcache-prefetches,L1-dcache-prefetch-misses,L1-icache-loads,L1-icache-load-misses,L1-icache-prefetches,L1-icache-prefetch-misses,LLC-loads,LLC-load-misses,mem-loads,mem-stores,l2_rqsts.code_rd_miss,l2_rqsts.demand_data_rd_miss,l2_rqsts.rfo_miss,l1d_pend_miss.pending,frontend_retired.l1i_miss,frontend_retired.itlb_miss,frontend_retired.stlb_miss exe/cpuxalan_r_base.mytest-m64 -v data/refrate/input/t5.xml data/refrate/input/xalanc.xsl
-
-    tr -d ',' < per_out.txt > perout1_523.txt
-
-###  526.blender_r
-
-    perf stat -I 15 -o per_out_526.txt -e cpu-cycles,instructions,branch-misses,cache-misses,L1-dcache-loads,L1-dcache-load-misses,L1-dcache-stores,L1-dcache-store-misses,L1-dcache-prefetches,L1-dcache-prefetch-misses,L1-icache-loads,L1-icache-load-misses,L1-icache-prefetches,L1-icache-prefetch-misses,LLC-loads,LLC-load-misses,mem-loads,mem-stores,l2_rqsts.code_rd_miss,l2_rqsts.demand_data_rd_miss,l2_rqsts.rfo_miss,l1d_pend_miss.pending,frontend_retired.l1i_miss,frontend_retired.itlb_miss,frontend_retired.stlb_miss exe/blender_r_base.mytest-m64 data/refrate/input/sh3_no_char.blend --render-output sh3_no_char_--threads1 -b -F RAWTGA -s 849 -e 849 -a
-
-
-     tr -d ',' < per_out_526.txt > perout1_526.txt
-
-### 544.nab_r
-
-    perf stat -I 15 -o per_out_526.txt -e cpu-cycles,instructions,branch-misses,cache-misses,L1-dcache-loads,L1-dcache-load-misses,L1-dcache-stores,L1-dcache-store-misses,L1-dcache-prefetches,L1-dcache-prefetch-misses,L1-icache-loads,L1-icache-load-misses,L1-icache-prefetches,L1-icache-prefetch-misses,LLC-loads,LLC-load-misses,mem-loads,mem-stores,l2_rqsts.code_rd_miss,l2_rqsts.demand_data_rd_miss,l2_rqsts.rfo_miss,l1d_pend_miss.pending,frontend_retired.l1i_miss,frontend_retired.itlb_miss,frontend_retired.stlb_miss exe/nab_r_base.mytest-m64 1am0 1122214447 122
-
-    tr -d ',' < per_out_544.txt > perout1_544.txt
+Step 1. Get open source code for Champsim simulator 
 
 
 
