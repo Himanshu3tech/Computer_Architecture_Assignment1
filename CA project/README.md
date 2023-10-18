@@ -32,7 +32,7 @@ entries in each tage component i.e no of entries in Tage table.
 2. Tage_size_2048 have implementation for Tage 2048 predictor variant 
 with 2048 entries in each tage component.
 3. Tage_size_8192 have implementation for Tage predictor variant with 
-8192 entries in each tage component i.e no of entries in Tage table.
+8192 entries in each tage component.
 
 #### Program files for Variation 2 are inside folder Variation_2: ####
 1. Tage_bitsize_7 have implementation for Tage predictor variant with tag 
@@ -58,8 +58,8 @@ variant with max-history length 255.
 
 **b) Variation in minimum history length**
 
-Program files for max history variation available at folder 
-Variation_3/max-history, inside max-history folder: 
+Program files for min history variation available at folder 
+Variation_3/min-history, inside min-history folder: 
 1. Tage_min_history_5 have implementation for Tage predictor variant 
 with minimum history length 5.
 2. Tage_min_history_10 have implementation for Tage predictor variant 
@@ -129,8 +129,7 @@ Above command will create a binary executable file inside Champsim/bin folder.
 
 Step 9 :- Run below command 
 ``` 
-$ bin/champsim –warmup-instructions 200000000 –simulation-instructions 
-500000000 ~/path/to/traces/trace_name
+$ bin/champsim –warmup-instructions 200000000 –simulation-instructions 500000000 ~/path/to/traces/trace_name
 
 ```
 where “champsim” is the binary executable we got from previous step.
