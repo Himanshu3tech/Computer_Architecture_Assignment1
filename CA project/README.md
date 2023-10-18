@@ -6,10 +6,9 @@ We will Champsim simulator to evaluate performance of our branch predictors.Cham
 
 We Used Following SPEC Benchmarks.
 
-| 605.mcf_s-1152B.champsimtrace.xz|
-|--|
-| 619.lbm_s-2676B.champsimtrace.xz|
-| 623.xalancbmk_s-592B.champsimtrace.xz|
+|605.mcf_s-1152B.champsimtrace.xz|
+|619.lbm_s-2676B.champsimtrace.xz|
+|623.xalancbmk_s-592B.champsimtrace.xz|
 
 ## Below is the program files description:
 
@@ -41,7 +40,8 @@ bit size of 11 bits.
 bit size of 15 bits.
 #### Program files for Variation 3 are inside folder Variation_3 ####
 We have two sub variation for part 3 
-##### a) Variation in maximum history length #####
+
+**a) Variation in maximum history length**
 Program files for max history variation available at folder 
 Variation_3/max-history, inside max-history folder: 
 1. Tage_max_history_64 have implementation for Tage predictor variant 
@@ -50,7 +50,7 @@ with max-history length 65.
 variant with max-history length 131.
 3. Tage_max_history_255 have implementation for Tage predictor 
 variant with max-history length 255.
-##### b) Variation in minimum history length #####
+**b) Variation in minimum history length**
 Program files for max history variation available at folder 
 Variation_3/max-history, inside max-history folder: 
 1. Tage_min_history_5 have implementation for Tage predictor variant 
@@ -76,37 +76,45 @@ allocation for Tage predictor.
 Now we will look at how to test predictors against given traces
 
 Step 1. Get open source code for Champsim simulator 
+```
+    $ git clone https://github.com/ChampSim/ChampSim.git
 
+```
+Step 2. Download dependencies for Champsim
+```
+    $ git submodule update --init
+    $ vcpkg/bootstrap-vcpkg.sh
+    $ vcpkg/vcpkg install
 
+```
+Step 3 . Go to Champsim/btb folder. Open basic_btb.cc file.
 
+Step 4 . As we have budget constraint of having 2048 entries in btb. Update entry 
+BTB_SET to 512 and BTB_WAY =4.
 
-## How To Use Data to plot Linear Regression
-Unzip the Problem_2 Folder.
+Step 5. Take the program file of needed predictor that you want to test from 
+appropriate folders mentioned above and paste it inside Champsim/branch folder.
 
-    cd Problem_2
+Step 6:- Open champsim_config.json file present inside Champsim folder.
 
-Now We have .txt File of the benchmark output.
-We Have to give path of that txt file as input to the Main.py.
-All the Text files are in Test folder.We can use Any one of those text file.
-It will take text file and then internally it will create csv file from that text file.
-And Do Linier Regression using csv and give various parameters as output.
-And also plot CPI Stack and Residual Plot.
+Step 7:- Set branch_predictor to the name of folder which contains implementation 
+for predictor that need to be tested and save the file.
 
-    python3 Main.py path/to/text/file
+Step 8. Run below command to make binary executable file for champsim.
+$ ./config.sh champsim.config.json
+$ make 
+Above command will create a binary executable file inside Champsim/bin folder.
 
-## Output
+Step 9 :- Run below command 
+``` 
+    $ bin/champsim –warmup-instructions 200000000 –simulation-instructions 
+    500000000 ~/path/to/traces/trace_name
 
-We Have All Parameters like RMSE , F State , P-value , R Square etc.
-And We have Stack Graph of Cpi and get Residuals Plot.
+```
+where “champsim” is the binary executable we got from previous step.
+“~/path/to/traces” is the path to the folder which contain traces.
+“trace_name” is name of the trace on which predictor will be tested.
 
-    Base :  0.15327224279399115
-    Mean Square Error: 0.03509010472581555
-    R_Square :  0.9351548068220135
-    Adj :  0.9345556212587671
-    fstat : 660.1770591848838
-    Predicted :  0.4184557996221837
-    True : 0.5512553770464241
-    P value : 1.1102230246251565e-16
-
+Step 10:- Note the MPKI,IPC and Accuracy reported by predictor
 
 
