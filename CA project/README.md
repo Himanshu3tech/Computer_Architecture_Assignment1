@@ -1,11 +1,11 @@
 # Evaluating performance of different Branch Predictors on SPEC Benchmarks
 
 ## Introduction
-We will Champsim simulator to evaluate performance of our branch predictors.Champsim is a trace driven simulator which have several parameters like branch_predictor,no of cores,replacement policy,branch table e.t.c.
+We will use Champsim simulator to evaluate performance of our branch predictors.Champsim is a trace driven simulator which have several parameters like branch_predictor,no of cores,replacement policy,branch table e.t.c.
 
 
 We Used Following SPEC Benchmarks.
-|**Benchamrk**|
+|**Benchmarks**|
 |--|
 |605.mcf_s-1152B.champsimtrace.xz|
 |619.lbm_s-2676B.champsimtrace.xz|
@@ -45,7 +45,7 @@ bit size of 15 bits.
 #### Program files for Variation 3 are inside folder Variation_3 ####
 We have two sub variation for part 3 
 
-**a) Variation in maximum history length**\n
+**a) Variation in maximum history length**
 
 Program files for max history variation available at folder 
 Variation_3/max-history, inside max-history folder: 
@@ -83,6 +83,9 @@ allocation for Tage predictor.
 
 Now we will look at how to test predictors against given traces
 
+## Steps to test predictor on traces ##
+
+
 Step 1. Get open source code for Champsim simulator 
 ```
 $ git clone https://github.com/ChampSim/ChampSim.git
@@ -97,8 +100,8 @@ $ vcpkg/vcpkg install
 ```
 Step 3 . Go to Champsim/btb folder. Open basic_btb.cc file.
 ```
-cd Champsim/btb
-vim basic_btb.cc
+$ cd Champsim/btb
+$ vim basic_btb.cc
 
 ```
 
@@ -110,7 +113,7 @@ appropriate folders mentioned above and paste it inside Champsim/branch folder.
 
 Step 6:- Open champsim_config.json file present inside Champsim folder.
 ```
-vim champsim_config.json
+$ vim champsim_config.json
 ```
 
 Step 7:- Set branch_predictor to the name of folder which contains implementation 
